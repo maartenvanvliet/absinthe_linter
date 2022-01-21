@@ -12,7 +12,7 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptions do
   end
 
   defp validate_node(%Blueprint.Schema.EnumValueDefinition{} = node) do
-    if node.description == nil do
+    if node.description != nil do
       node
     else
       node |> Absinthe.Phase.put_error(error(node))

@@ -12,8 +12,6 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptionsTest do
 
     enum :color_channel do
       value :red, as: :r
-      value :green, as: :g, description: "Color Green"
-      value :blue, as: :b, description: "Color Blue"
     end
   end
   """

@@ -1,5 +1,4 @@
 defmodule AbsintheLinter.Rule do
-
   def put_warning(node, error) do
     if node.__private__[:linter_skip] do
       node

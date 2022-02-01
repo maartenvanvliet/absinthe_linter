@@ -19,7 +19,7 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabetically do
     if sorted_values?(node) do
       node
     else
-      node |> Absinthe.Phase.put_error(error(node))
+      node |> AbsintheLinter.Rule.put_warning(error(node))
     end
   end
 
@@ -32,7 +32,7 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabetically do
   end
 
   defp error(node) do
-    %Absinthe.Phase.Error{
+    %AbsintheLinter.Error{
       message: "Enum values are not sorted alphabetically",
       locations: [node.__reference__.location],
       phase: __MODULE__

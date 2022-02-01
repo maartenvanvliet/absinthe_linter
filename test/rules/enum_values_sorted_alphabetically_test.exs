@@ -1,11 +1,12 @@
 defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   use ExUnit.Case
+  import ExUnit.CaptureIO
 
   @schema """
   defmodule Schema do
     use Absinthe.Schema
 
-    @pipeline_modifier AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest
+    use AbsintheLinter, rules: [AbsintheLinter.Rules.EnumValuesSortedAlphabetically]
 
     query do
     end
@@ -18,19 +19,9 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   end
   """
 
-  def pipeline(pipeline) do
-    pipeline
-    |> Absinthe.Pipeline.insert_after(
-      Absinthe.Phase.Schema.Validation.UniqueFieldNames,
-      AbsintheLinter.Rules.EnumValuesSortedAlphabetically
-    )
-  end
-
-  test "raises error" do
-    message = ~r/Enum values are not sorted alphabetically/
-
-    assert_raise(Absinthe.Schema.Error, message, fn ->
-      Code.eval_string(@schema, [], __ENV__)
-    end)
+  test "logs error" do
+    assert capture_io(:stderr, fn ->
+             Code.eval_string(@schema, [], __ENV__)
+           end) =~ "Enum values are not sorted alphabetically"
   end
 end

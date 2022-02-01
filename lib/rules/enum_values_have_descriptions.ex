@@ -15,7 +15,10 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptions do
     if node.description != nil do
       node
     else
-      node |> Absinthe.Phase.put_error(error(node))
+      # TODO: put warning on node when Absinthe 1.7.1 is released
+      error = error(node)
+      IO.warn(error.message, [])
+      node
     end
   end
 
@@ -24,7 +27,7 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptions do
   end
 
   defp error(node) do
-    %Absinthe.Phase.Error{
+    %AbsintheLinter.Error{
       message: "Enum values don't have descriptions",
       locations: [node.__reference__.location],
       phase: __MODULE__

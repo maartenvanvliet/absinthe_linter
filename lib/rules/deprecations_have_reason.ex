@@ -12,7 +12,7 @@ defmodule AbsintheLinter.Rules.DeprecationsHaveReason do
   end
 
   defp validate_node(%{deprecation: %{reason: reason}} = node) when not is_binary(reason) do
-    node |> Absinthe.Phase.put_error(error(node))
+    node |> AbsintheLinter.Rule.put_warning(error(node))
   end
 
   defp validate_node(node) do
@@ -20,7 +20,7 @@ defmodule AbsintheLinter.Rules.DeprecationsHaveReason do
   end
 
   defp error(node) do
-    %Absinthe.Phase.Error{
+    %AbsintheLinter.Error{
       message: "Deprecation has no reason on node `#{node.name}`",
       locations: [node.__reference__.location],
       phase: __MODULE__

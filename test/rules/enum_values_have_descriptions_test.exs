@@ -1,11 +1,12 @@
 defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptionsTest do
   use ExUnit.Case
+  import ExUnit.CaptureIO
 
   @schema """
   defmodule Schema do
     use Absinthe.Schema
 
-    @pipeline_modifier #{__MODULE__}
+    use AbsintheLinter, rules: [AbsintheLinter.Rules.EnumValuesHaveDescriptions]
 
     query do
     end
@@ -16,19 +17,9 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptionsTest do
   end
   """
 
-  def pipeline(pipeline) do
-    pipeline
-    |> Absinthe.Pipeline.insert_after(
-      Absinthe.Phase.Schema.Validation.UniqueFieldNames,
-      AbsintheLinter.Rules.EnumValuesHaveDescriptions
-    )
-  end
-
-  test "raises error" do
-    message = ~r/Enum values don't have descriptions/
-
-    assert_raise(Absinthe.Schema.Error, message, fn ->
-      Code.eval_string(@schema, [], __ENV__)
-    end)
+  test "node has linting warning" do
+    assert capture_io(:stderr, fn ->
+             Code.eval_string(@schema, [], __ENV__)
+           end) =~ "Enum values don't have descriptions"
   end
 end

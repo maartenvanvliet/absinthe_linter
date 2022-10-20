@@ -12,7 +12,7 @@ jobs:
             check_formatted: true
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: erlef/setup-elixir@v1.13
+      - uses: erlef/setup-elixir@v1.14
         with:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}

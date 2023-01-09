@@ -19,7 +19,26 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   end
   """
 
-  test "logs error" do
+  test "logs error for enum" do
+    assert capture_io(:stderr, fn ->
+             Code.eval_string(@schema, [], __ENV__)
+           end) =~ "Enum values are not sorted alphabetically"
+  end
+
+  @schema """
+  defmodule SchemaShorthand do
+    use Absinthe.Schema
+
+    use AbsintheLinter, rules: [AbsintheLinter.Rules.EnumValuesSortedAlphabetically]
+
+    query do
+    end
+
+    enum :color_channel, values: [:red, :green, :blue, :alpha]
+  end
+  """
+
+  test "logs error for shorthand" do
     assert capture_io(:stderr, fn ->
              Code.eval_string(@schema, [], __ENV__)
            end) =~ "Enum values are not sorted alphabetically"

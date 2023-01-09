@@ -27,9 +27,13 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabetically do
     node
   end
 
+  # List.flatten is used to handle the shorthand enum values
   defp sorted_values?(node) do
-    Enum.sort_by(node.values, & &1.name) == node.values
+    node.values |> List.flatten() |> Enum.sort_by(&sort_key/1) == List.flatten(node.values)
   end
+
+  defp sort_key(%{name: name}), do: name
+  defp sort_key(value), do: value
 
   defp error(node) do
     %AbsintheLinter.Error{

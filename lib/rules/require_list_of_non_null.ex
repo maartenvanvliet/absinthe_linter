@@ -44,7 +44,7 @@ defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
 
   defp error(node) do
     %AbsintheLinter.Error{
-      message: "Found nullable list `#{node.name}`",
+      message: "Found nullable list items `#{node.name}`",
       locations: [node.__reference__.location],
       phase: __MODULE__
     }

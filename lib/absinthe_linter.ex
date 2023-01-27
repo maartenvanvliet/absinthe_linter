@@ -24,7 +24,8 @@ defmodule AbsintheLinter do
     Rules.DeprecationsHaveReason,
     Rules.EnumValuesHaveDescriptions,
     Rules.EnumValuesSortedAlphabetically,
-    Rules.RequireNonNullListsOfNonNull
+    Rules.RequireNonNullLists,
+    Rules.RequireListsOfNonNull
   ]
 
   @doc """

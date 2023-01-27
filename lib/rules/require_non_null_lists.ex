@@ -1,4 +1,4 @@
-defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNull do
+defmodule AbsintheLinter.Rules.RequireNonNullLists do
   @moduledoc """
   Ensure deprecations in your schema declare a reason.
   """
@@ -18,17 +18,6 @@ defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNull do
 
   defp validate_node(%Blueprint.Schema.FieldDefinition{type: %TypeReference.List{}} = node) do
     node |> AbsintheLinter.Rule.put_warning(error(node))
-  end
-
-  defp validate_node(
-         %Blueprint.Schema.FieldDefinition{
-           type: %TypeReference.NonNull{of_type: %TypeReference.List{of_type: inner_type}}
-         } = node
-       ) do
-    case inner_type do
-      %TypeReference.NonNull{} -> node
-      _ -> node |> AbsintheLinter.Rule.put_warning(error(node))
-    end
   end
 
   defp validate_node(node) do

@@ -1,6 +1,6 @@
 defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
   @moduledoc """
-  Ensure deprecations in your schema declare a reason.
+  Ensure lists don't have null values.
   """
   @behaviour Absinthe.Phase
   alias Absinthe.Blueprint

@@ -54,6 +54,10 @@ defmodule Schema do
         AbsintheLinter.Rules.DeprecationsHaveReason,
       ]
     )
+    |> Absinthe.Pipeline.insert_after(
+      Absinthe.Phase.Schema.ReformatDescriptions,
+      AbsintheLinter.Result
+    )
   end
 end
 ```

@@ -22,10 +22,11 @@ defmodule AbsintheLinter do
 
   @default_rules [
     Rules.DeprecationsHaveReason,
+    Rules.DescriptionsAreCapitalized,
     Rules.EnumValuesHaveDescriptions,
     Rules.EnumValuesSortedAlphabetically,
-    Rules.RequireNonNullLists,
-    Rules.RequireListsOfNonNull
+    Rules.RequireListsOfNonNull,
+    Rules.RequireNonNullLists
   ]
 
   @doc """

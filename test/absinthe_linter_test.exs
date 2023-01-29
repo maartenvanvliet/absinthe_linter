@@ -1,6 +1,7 @@
 defmodule AbsintheLinterTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
+
   alias AbsintheLinter.Rules
 
   @schema """
@@ -21,7 +22,7 @@ defmodule AbsintheLinterTest do
   end
 
   test "adds linter phases to pipeline" do
-    Code.eval_string(@schema, [], __ENV__)
+    eval_schema(@schema)
 
     assert_receive pipeline: pipeline
 
@@ -33,6 +34,7 @@ defmodule AbsintheLinterTest do
   @schema """
   defmodule CustomLintingSchema do
     use Absinthe.Schema
+    alias AbsintheLinter.Rules
 
     @pipeline_modifier AbsintheLinterTest
     @pipeline_modifier {__MODULE__, :custom_linting_rules}
@@ -53,7 +55,7 @@ defmodule AbsintheLinterTest do
   """
 
   test "adds custom linter phases to pipeline" do
-    Code.eval_string(@schema, [], __ENV__)
+    eval_schema(@schema)
 
     assert_receive pipeline: pipeline
 
@@ -65,6 +67,7 @@ defmodule AbsintheLinterTest do
   @schema """
   defmodule CustomLintingSchemaUsing do
     use Absinthe.Schema
+    alias AbsintheLinter.Rules
 
     @pipeline_modifier AbsintheLinterTest
     use AbsintheLinter, rules: [Rules.DeprecationsHaveReason]
@@ -80,9 +83,7 @@ defmodule AbsintheLinterTest do
 
   test "adds custom linter phases to pipeline with using" do
     try do
-      capture_io(:stderr, fn ->
-        Code.eval_string(@schema, [], __ENV__)
-      end)
+      capture_io_from_schema(@schema)
     rescue
       e -> e
     end
@@ -94,9 +95,9 @@ defmodule AbsintheLinterTest do
     assert Rules.EnumValuesHaveDescriptions not in pipeline
   end
 
+  @warning "Deprecation has no reason on node"
+
   test "outputs warnings" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@schema, [], __ENV__)
-           end) =~ "Deprecation has no reason on node `testy`"
+    assert_capture_io(@schema, "#{@warning} `testy`")
   end
 end

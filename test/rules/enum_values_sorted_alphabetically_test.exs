@@ -1,6 +1,8 @@
 defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
+
+  @warning "Enum values are not sorted alphabetically"
 
   @schema """
   defmodule Schema do
@@ -20,9 +22,7 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   """
 
   test "logs error for enum" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@schema, [], __ENV__)
-           end) =~ "Enum values are not sorted alphabetically"
+    assert_capture_io(@schema, @warning)
   end
 
   @schema """
@@ -39,8 +39,6 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   """
 
   test "logs error for shorthand" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@schema, [], __ENV__)
-           end) =~ "Enum values are not sorted alphabetically"
+    assert_capture_io(@schema, @warning)
   end
 end

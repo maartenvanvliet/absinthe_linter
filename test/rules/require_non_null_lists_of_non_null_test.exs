@@ -1,6 +1,8 @@
 defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNullTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
+
+  @warning "Found nullable lists of nullable items"
 
   @invalid_schema """
   defmodule InvalidSchema do
@@ -43,33 +45,23 @@ defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNullTest do
     )
   end
 
-  test "logs error for nullable lists" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@invalid_schema, [], __ENV__)
-           end) =~ "Found nullable lists of nullable items `test_nullable_list`."
+  test "should log error for nullable lists" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list`.")
   end
 
-  test "logs error for nullable list items" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@invalid_schema, [], __ENV__)
-           end) =~ "Found nullable lists of nullable items `test_nullable_list_items`."
+  test "should log error for nullable list items" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list_items`.")
   end
 
-  test "logs error for nullable list items in objects" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@invalid_schema, [], __ENV__)
-           end) =~ "Found nullable lists of nullable items `test_list_object`."
+  test "should log error for nullable list items in objects" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_list_object`.")
   end
 
-  test "does not logs error" do
-    refute capture_io(:stderr, fn ->
-             Code.eval_string(@valid_schema, [], __ENV__)
-           end) =~ "Found nullable lists of nullable items `test_list_query`."
+  test "should not log errors for properly configured fields" do
+    refute_capture_io(@valid_schema, "#{@warning} `test_list_query`.")
   end
 
-  test "does not logs error for input objects" do
-    refute capture_io(:stderr, fn ->
-             Code.eval_string(@valid_schema, [], __ENV__)
-           end) =~ "Found nullable lists of nullable items `test_input_object_list`."
+  test "should not log errors for input objects" do
+    refute_capture_io(@valid_schema, "#{@warning} `test_input_object_list`.")
   end
 end

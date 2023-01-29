@@ -1,6 +1,8 @@
 defmodule AbsintheLinter.Rules.RequireInputObjectsListsOfNonNullTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
+
+  @warning "Found input object with nullable list items"
 
   @invalid_schema """
   defmodule InvalidSchema do
@@ -51,20 +53,14 @@ defmodule AbsintheLinter.Rules.RequireInputObjectsListsOfNonNullTest do
   end
 
   test "logs error" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@invalid_schema, [], __ENV__)
-           end) =~ "Found input object with nullable list items `test_input_object_list`."
+    assert_capture_io(@invalid_schema, "#{@warning} `test_input_object_list`.")
   end
 
   test "does not logs error if not an input_object" do
-    refute capture_io(:stderr, fn ->
-             Code.eval_string(@valid_schema, [], __ENV__)
-           end) =~ "Found input object with nullable list items `test_list_in_query`."
+    refute_capture_io(@valid_schema, "#{@warning} `test_list_in_query`.")
   end
 
   test "does not logs error" do
-    refute capture_io(:stderr, fn ->
-             Code.eval_string(@valid_schema, [], __ENV__)
-           end) =~ "Found input object with nullable list items `test_input_object_list`."
+    refute_capture_io(@valid_schema, "#{@warning} `test_input_object_list`.")
   end
 end

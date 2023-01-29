@@ -1,6 +1,8 @@
 defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptionsTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
+
+  @warning "Enum values don't have descriptions"
 
   @schema """
   defmodule Schema do
@@ -18,8 +20,6 @@ defmodule AbsintheLinter.Rules.EnumValuesHaveDescriptionsTest do
   """
 
   test "node has linting warning" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@schema, [], __ENV__)
-           end) =~ "Enum values don't have descriptions"
+    assert_capture_io(@schema, @warning)
   end
 end

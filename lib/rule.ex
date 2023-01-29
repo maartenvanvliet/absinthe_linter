@@ -9,4 +9,12 @@ defmodule AbsintheLinter.Rule do
       end)
     end
   end
+
+  def add_skip_flag(node) do
+    %{node | flags: Map.put(node.flags, :linter_skip_rule, true)}
+  end
+
+  def remove_skip_flag(node) do
+    %{node | flags: Map.put(node.flags, :linter_skip_rule, false)}
+  end
 end

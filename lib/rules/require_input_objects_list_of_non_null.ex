@@ -1,6 +1,6 @@
-defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
+defmodule AbsintheLinter.Rules.RequireInputObjectsListsOfNonNull do
   @moduledoc """
-  Ensure lists don't have null values.
+  Ensure input objects don't have lists with null items.
   """
   @behaviour Absinthe.Phase
   alias Absinthe.Blueprint
@@ -16,7 +16,15 @@ defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
     node
   end
 
-  defp validate_node(
+  defp validate_node(%Blueprint.Schema.InputObjectTypeDefinition{fields: fields} = node) do
+    %{node | fields: Enum.map(fields, &validate_child_node/1)}
+  end
+
+  defp validate_node(node) do
+    node
+  end
+
+  defp validate_child_node(
          %Blueprint.Schema.FieldDefinition{
            type: %TypeReference.List{of_type: inner_type}
          } = node
@@ -27,7 +35,7 @@ defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
     end
   end
 
-  defp validate_node(
+  defp validate_child_node(
          %Blueprint.Schema.FieldDefinition{
            type: %TypeReference.NonNull{of_type: %TypeReference.List{of_type: inner_type}}
          } = node
@@ -38,13 +46,13 @@ defmodule AbsintheLinter.Rules.RequireListsOfNonNull do
     end
   end
 
-  defp validate_node(node) do
+  defp validate_child_node(node) do
     node
   end
 
   defp error(node) do
     %AbsintheLinter.Error{
-      message: "Found nullable list items `#{node.name}`",
+      message: "Found input object with nullable list items `#{node.name}`",
       locations: [node.__reference__.location],
       phase: __MODULE__
     }

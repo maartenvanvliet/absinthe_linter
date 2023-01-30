@@ -21,7 +21,7 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   end
   """
 
-  test "logs error for enum" do
+  test "should log errors for unordered nicknamed enums" do
     assert_capture_io(@schema, @warning)
   end
 
@@ -38,7 +38,24 @@ defmodule AbsintheLinter.Rules.EnumValuesSortedAlphabeticallyTest do
   end
   """
 
-  test "logs error for shorthand" do
+  test "should log errors for unordered enums" do
     assert_capture_io(@schema, @warning)
+  end
+
+  @schema """
+  defmodule SchemaShorthand do
+    use Absinthe.Schema
+
+    use AbsintheLinter, rules: [AbsintheLinter.Rules.EnumValuesSortedAlphabetically]
+
+    query do
+    end
+
+    enum :color_channel, values: [:alpha, :blue, :green, :red]
+  end
+  """
+
+  test "should not log errors for ordered enums" do
+    refute_capture_io(@schema, @warning)
   end
 end

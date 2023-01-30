@@ -21,6 +21,18 @@ defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNullTest do
   end
   """
 
+  test "should log error for nullable lists" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list`.")
+  end
+
+  test "should log error for nullable list items" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list_items`.")
+  end
+
+  test "should log error for nullable list items in objects" do
+    assert_capture_io(@invalid_schema, "#{@warning} `test_list_object`.")
+  end
+
   @valid_schema """
   defmodule ValidSchema do
     use Absinthe.Schema
@@ -36,26 +48,6 @@ defmodule AbsintheLinter.Rules.RequireNonNullListsOfNonNullTest do
     end
   end
   """
-
-  def pipeline(pipeline) do
-    pipeline
-    |> Absinthe.Pipeline.insert_after(
-      Absinthe.Phase.Schema.Validation.UniqueFieldNames,
-      AbsintheLinter.Rules.RequireNonNullListsOfNonNull
-    )
-  end
-
-  test "should log error for nullable lists" do
-    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list`.")
-  end
-
-  test "should log error for nullable list items" do
-    assert_capture_io(@invalid_schema, "#{@warning} `test_nullable_list_items`.")
-  end
-
-  test "should log error for nullable list items in objects" do
-    assert_capture_io(@invalid_schema, "#{@warning} `test_list_object`.")
-  end
 
   test "should not log errors for properly configured fields" do
     refute_capture_io(@valid_schema, "#{@warning} `test_list_query`.")

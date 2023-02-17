@@ -25,8 +25,8 @@ defmodule AbsintheLinter do
     Rules.DescriptionsAreCapitalized,
     Rules.EnumValuesHaveDescriptions,
     Rules.EnumValuesSortedAlphabetically,
-    Rules.RequireListsOfNonNull,
-    Rules.RequireNonNullLists
+    Rules.RequireInputObjectsListsOfNonNull,
+    Rules.RequireNonNullListsOfNonNull
   ]
 
   @doc """

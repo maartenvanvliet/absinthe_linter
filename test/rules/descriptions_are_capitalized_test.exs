@@ -1,8 +1,10 @@
 defmodule AbsintheLinter.Rules.DescriptionsAreCapitalizedTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
 
-  @invalid_schema """
+  @warning "The description must start with a capital letter on node"
+
+  @schema """
   defmodule InvalidSchema do
     use Absinthe.Schema
 
@@ -10,32 +12,18 @@ defmodule AbsintheLinter.Rules.DescriptionsAreCapitalizedTest do
 
     query do
       @desc "invalid"
-      field :test, :string
+      field :test_with_description_not_capitalized, :string
+
+      field :test_with_description_capitalized, :string, description: "Valid"
     end
   end
   """
 
-  @valid_schema """
-  defmodule ValidSchema do
-    use Absinthe.Schema
-
-    use AbsintheLinter, rules: [AbsintheLinter.Rules.DescriptionsAreCapitalized]
-
-    query do
-      field :test, :string, description: "Valid"
-    end
-  end
-  """
-
-  test "logs error" do
-    assert capture_io(:stderr, fn ->
-             Code.eval_string(@invalid_schema, [], __ENV__)
-           end) =~ "The description must start with a capital letter on node `test`"
+  test "should log error for field with description not capitalized" do
+    assert_capture_io(@schema, "#{@warning} `test_with_description_not_capitalized`.")
   end
 
-  test "does not logs error" do
-    refute capture_io(:stderr, fn ->
-             Code.eval_string(@valid_schema, [], __ENV__)
-           end) =~ "The description must start with a capital letter on node `test`"
+  test "should not log error for field with description capitalized" do
+    refute_capture_io(@schema, "#{@warning} `test_with_description_capitalized`.")
   end
 end
